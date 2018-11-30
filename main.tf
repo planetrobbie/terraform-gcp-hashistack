@@ -35,11 +35,5 @@ resource "google_compute_instance" "vm" {
     user-data = "${data.template_file.userdata.rendered}"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y python"
-    ]
-  }
   count = 3
 }
