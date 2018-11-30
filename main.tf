@@ -16,6 +16,8 @@ resource "google_compute_instance" "vm" {
   zone         = "${var.region_zone}"
   allow_stopping_for_update = true
 
+  tags = ["consul"]
+
   boot_disk {
     initialize_params {
       image = "${var.image}"
