@@ -4,6 +4,12 @@ provider "google" {
 #  credentials = "${file(var.account_file_path)}"
 }
 
+data "template_file" "userdata" {
+    template = "${file("templates/userdata.tpl")}"
+    vars {
+    }
+}
+
 resource "google_compute_instance" "vm" {
   name         = "ansible-consul-${count.index}"
   machine_type = "${var.instance_type}"
@@ -23,8 +29,10 @@ resource "google_compute_instance" "vm" {
       // Ephemeral IP
     }
   }
+
   metadata {
     sshKeys = "${var.ssh_user}:${var.ssh_pub_key}"
+    user-data = "${data.template_file.userdata.rendered}"
   }
 
   provisioner "remote-exec" {
