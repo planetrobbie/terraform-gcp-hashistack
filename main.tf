@@ -27,8 +27,11 @@ resource "google_compute_instance" "vm" {
     sshKeys = "${var.ssh_user}:${var.ssh_pub_key}"
   }
 
-  provisioner "local-exec" {
-    command = "apt-get install python"
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y python"
+    ]
   }
   count = 3
 }
