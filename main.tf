@@ -26,5 +26,9 @@ resource "google_compute_instance" "vm" {
   metadata {
     sshKeys = "${var.ssh_user}:${var.ssh_pub_key}"
   }
+
+  provisioner "local-exec" {
+    command = "apt-get install python"
+  }
   count = 3
 }
