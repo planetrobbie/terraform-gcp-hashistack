@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "vm" {
-  name         = "ansible-consul"
+  name         = "ansible-consul-${count.index}"
   machine_type = "${var.instance_type}"
   zone         = "${var.region_zone}"
   allow_stopping_for_update = true
