@@ -1,8 +1,7 @@
-# uncomment only if not already there or will break.
-#resource "google_dns_managed_zone" "dns_zone" {
-#  name     = "${var.gcp_dns_zone}"
-#  dns_name = "${var.gcp_dns_domain}"
-#}
+resource "google_dns_managed_zone" "dns_zone" {
+  name     = "${var.gcp_dns_zone}"
+  dns_name = "${var.gcp_dns_domain}"
+}
 
 resource "google_dns_record_set" "consul-1" {
   name = "c1.${google_dns_managed_zone.dns_zone.dns_name}"
