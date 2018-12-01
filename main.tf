@@ -47,7 +47,7 @@ resource "google_compute_instance" "vault" {
   zone         = "${var.region_zone}"
   allow_stopping_for_update = true
 
-  tags = ["vault"]
+  tags = ["vault", "consul"]
 
   boot_disk {
     initialize_params {
