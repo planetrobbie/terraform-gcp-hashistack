@@ -10,7 +10,7 @@ resource "google_dns_record_set" "consul-1" {
 
   managed_zone = "${google_dns_managed_zone.dns_zone.name}"
 
-  rrdatas = ["${google_compute_instance.vm.0.network_interface.0.access_config.0.assigned_nat_ip}"]
+  rrdatas = ["${google_compute_instance.consul.0.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
 
 resource "google_dns_record_set" "consul-2" {
@@ -20,7 +20,7 @@ resource "google_dns_record_set" "consul-2" {
 
   managed_zone = "${google_dns_managed_zone.dns_zone.name}"
 
-  rrdatas = ["${google_compute_instance.vm.1.network_interface.0.access_config.0.assigned_nat_ip}"]
+  rrdatas = ["${google_compute_instance.consul.1.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
 
 resource "google_dns_record_set" "consul-3" {
@@ -30,7 +30,7 @@ resource "google_dns_record_set" "consul-3" {
 
   managed_zone = "${google_dns_managed_zone.dns_zone.name}"
 
-  rrdatas = ["${google_compute_instance.vm.2.network_interface.0.access_config.0.assigned_nat_ip}"]
+  rrdatas = ["${google_compute_instance.consul.2.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
 
 resource "google_dns_record_set" "vault-1" {

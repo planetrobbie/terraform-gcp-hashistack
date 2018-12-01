@@ -11,7 +11,7 @@ data "template_file" "userdata" {
     }
 }
 
-resource "google_compute_instance" "vm" {
+resource "google_compute_instance" "consul" {
   name         = "ansible-consul-${count.index}"
   machine_type = "${var.instance_type}"
   zone         = "${var.region_zone}"
