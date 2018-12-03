@@ -51,3 +51,22 @@ variable "ttl" {
   description = "DNS ttl of entry"
   default = "300"
 }
+
+#### Google KMS
+
+# Keyring
+
+variable "gkms_location" {
+  description = "Where the corresponding cryptographic keys are stored."
+  default = "europe-west1"
+}
+
+variable "gkms_vault_key_ring" {
+  description = "Keyring name which contain Vault masterkey for auto unseal"
+  default = "ansible-vault"
+}
+
+variable "gkms_vault_key" {
+  description = "name of the Vault Masterkey"
+  default = "vault-key"
+} 
