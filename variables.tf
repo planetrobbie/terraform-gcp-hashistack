@@ -18,11 +18,12 @@ variable "project_name" {
 
 variable "image" {
   description = "GCP Image to use"
+  default = "ubuntu-1804-lts"
 }
 
 variable "instance_type" {
   description = "GCP Machine Type to use"
-  default = "f1-micro"
+  default = "n1-standard-1"
 }
 
 variable "ssh_user" {
@@ -69,4 +70,12 @@ variable "gkms_vault_key_ring" {
 variable "gkms_vault_key" {
   description = "name of the Vault Masterkey"
   default = "vault-key"
-} 
+}
+
+#### Google Firewalling
+
+variable "external_source_ranges" {
+  type = "list"
+  description = "Which source range to allow inbound traffic to Consul API"
+  default = ["0.0.0.0/0"]
+}
