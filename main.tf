@@ -12,7 +12,7 @@ data "template_file" "userdata" {
 }
 
 resource "google_compute_instance" "consul" {
-  name         = "demo-consul-${count.index}"
+  name         = "prod-consul-${count.index}"
   machine_type = "${var.instance_type}"
   zone         = "${var.region_zone}"
   allow_stopping_for_update = true
@@ -42,7 +42,7 @@ resource "google_compute_instance" "consul" {
 }
 
 resource "google_compute_instance" "vault" {
-  name         = "demo-vault-${count.index}"
+  name         = "prod-vault-${count.index}"
   machine_type = "${var.instance_type}"
   zone         = "${var.region_zone}"
   allow_stopping_for_update = true

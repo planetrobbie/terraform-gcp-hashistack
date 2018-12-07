@@ -39,6 +39,7 @@ Enable the following ones
     gcloud services enable compute.googleapis.com
     gcloud services enable iam.googleapis.com
     gcloud services enable cloudkms.googleapis.com
+    gcloud services enable dns.googleapis.com
 
 # Create a Service Account
 
@@ -61,5 +62,7 @@ Now grant service account project ownership
     gcloud projects add-iam-policy-binding sb-vault --member \
     'serviceAccount:sb-vault-tf@sb-vault.iam.gserviceaccount.com' \
      --role 'roles/owner'
+
+Note: Make sure your account is linked to a billing account.
 
 This ends the setup of your Google Cloud environment ! Congrats.
