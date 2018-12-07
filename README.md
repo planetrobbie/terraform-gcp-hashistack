@@ -53,7 +53,19 @@ Once the plan ends succesfully, you can click on `Confirm & Apply` in TFE UI. Or
 
 If you're lucky you should have an output giving you ip addresses of consul and vault nodes.
 
+    Outputs:
+    
+    Vault IPs = [
+        35.X33.6.X3,
+        35.X95.59.X7
+    ]
+    consul IPs = [
+        35.X89.235.X90,
+        35.X41.245.X6,
+        35.X41.130.X4
+    ]
 
+We deliberately refrain ourselves to use modules to keep everything in a single repository to make it more readable and to ease troubleshooting.
 
 ## Ansible workflow
 

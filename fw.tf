@@ -11,18 +11,13 @@ resource "google_compute_firewall" "allow-inbound-vault-api" {
 }
 
 resource "google_compute_firewall" "allow-inbound-consul-api" {
-  name    = "allow-inbound-consul-dns-8600"
-  description = "allow DNS traffic to Consul nodes"
+  name    = "allow-inbound-consul-api"
+  description = "allow API traffic to Consul nodes"
   network = "default"
 
   allow {
     protocol = "tcp"
     ports = ["8500"]
-  }
-
-  allow {
-    protocol = "udp"
-    ports = ["8600"]
   }
 
   target_tags = ["consul"]
