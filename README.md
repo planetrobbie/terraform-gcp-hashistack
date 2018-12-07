@@ -25,7 +25,7 @@ You need to setup the following required Terraform variables in your workspace, 
       project_name: sb-vault
       ssh_pub_key: <YOUR_SSH_PUBLIC_KEY>
       gcp_dns_zone: vault-prod
-      gcp_dns_domain: vault.prod.yet.org
+      gcp_dns_domain: prod.yet.org.
 
 Make sure you update the variable above according to your needs. You can also look inside `variable.tf` to see what other ones you can update.
 
