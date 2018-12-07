@@ -1,6 +1,8 @@
 # Vault/Consul Cluster Deployment Automation with Terraform and Ansible.
 
 - Infrastructure provisioned by Terraform Enterprise or OSS [this code]
+- Auto-unseal enabled thru [Google Cloud KMS](https://learn.hashicorp.com/vault/operations/autounseal-gcp-kms)
+- TLS Certificates generated using [Let's Encrypt](https://letsencrypt.org/)
 - Configured by Brian Shumate Ansible Roles [see below]
 
 For Consul, Vault Ansible roles check:
@@ -69,7 +71,32 @@ We deliberately refrain ourselves to use modules to keep everything in a single 
 
 ## Ansible workflow
 
-To create a cluster you first have to create an Inventory files with your nodes, for example:
+### Ansible installation
+
+Install Ansible on your control node:
+
+    sudo easy_install pip
+    sudo pip install ansible
+
+### Roles configuration
+
+Configure roles location in `~/.ansible.cfg`:
+
+    mkdir ~/<PATH>/roles
+    vi ~/.ansible.cfg
+    [defaults]
+    roles_path = ~/<PATH>/roles/
+
+### Roles installation
+
+Install Vault and Consul Ansible Roles:
+
+    ansible-galaxy install brianshumate.consul
+    ansible-galaxy install brianshumate.vault
+
+### Ansible Inventory
+
+Create an Inventory files with your nodes, based on the Terraform deployment, it should look like this:
 
     [consul_instances]
     c3.prod.yet.org consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
@@ -82,7 +109,57 @@ To create a cluster you first have to create an Inventory files with your nodes,
     v1.prod.yet.org
     v2.prod.yet.org
 
-And tell Ansible what to do in `site.yml` like this
+### TLS Certificates
+
+Create TLS Certificates using Lets Encrypt and DNS based challenge like this
+
+    mkdir files; cd files
+    certbot certonly --manual --preferred-challenges dns --config-dir . --work-dir . --logs-dir .
+
+Update Google Cloud DNS to setup the requested challenge.
+
+    gcloud dns record-sets transaction start -z=vault-prod
+    gcloud dns record-sets transaction add -z=vault-prod \
+      --name="_aacme-challenge.prod.yet.org." \
+      --type=TXT \
+      --ttl=300 "NhdbSiix2LdTJQri72UKp-_VDp28lm1LPzE92jjVRIc"
+    gcloud dns record-sets transaction execute -z=vault-prod
+
+In parallel check record availability:
+
+    watch dig -t txt _acme-challenge.prod.yet.org
+
+The value should correspond to the challenge. Continue the process only when that's the case, it could alternate which is normal due to propagation time, wait until it's stop alternating. It can take few minutes. Once you get your TLS certificates generated copy them in their expected location
+
+    cp live/prod.yet.org/chain.pem ./ca.crt
+    cp live/prod.yet.org/privkey.pem ./vault.key
+    cp live/prod.yet.org/cert.pem ./vault.crt
+
+Great !!! Almost there, stay with us ;)
+
+### Google KMS Service Account
+
+It's not a good practice to share our project owner key too widely, we need to give our Vault nodes a service account key that give them the right to interact with Google Cloud KMS nothing more, nothing less. Let's create such an account
+
+    gcloud iam service-accounts create sb-vault-kms --display-name "sb-vault-kms Account"
+
+And create and download a corresponding JSON credentials
+
+    gcloud iam service-accounts keys create \
+        ~/.config/gcloud/sb-vault-kms.json \
+        --iam-account sb-vault-kms@sb-vault.iam.gserviceaccount.com
+
+Protect this file as well as you can, it gives access to Google KMS !
+
+Now grant service account access to Google Cloud KMS
+
+    gcloud projects add-iam-policy-binding sb-vault --member \
+    'serviceAccount:sb-vault-kms@sb-vault.iam.gserviceaccount.com' \
+     --role 'roles/cloudkms.cryptoKeyEncrypterDecrypter'
+
+### Ansible `site.yml`
+
+The last step consist in telling Ansible what to do in `site.yml` like this
 
     - name: Configure Consul cluster
       hosts: consul_instances
@@ -90,28 +167,39 @@ And tell Ansible what to do in `site.yml` like this
       become: true
       become_user: root
       roles:
-        - {role: brianshumate.consul}
+        - {role: ansible.consul}
       vars:
-        ansible_ssh_user: sebastien
+        ansible_ssh_user: <USERNAME>
         consul_iface: ens4
         consul_install_remotely: true
-    
+        consul_pkg: <ALTERNAME_PACKAGE_NAME>
+        consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
+        consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
+
     - name: Install Vault
       hosts: vault_instances
       any_errors_fatal: true
       become: true
       become_user: root
       roles:
-        - {role: brianshumate.vault}
+        - {role: ansible.vault}
       vars:
-        ansible_ssh_user: <USERNAME>
+        ansible_ssh_user: sebastien
         vault_iface: ens4
         vault_install_remotely: true
+        vault_pkg: <ALTERNAME_PACKAGE_NAME>
+        vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
+        vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
         vault_ui: true
         vault_tls_disable: false
-        vault_tls_src_files: <PATH_OF_YOUR_CERT_FILES>
+        vault_tls_src_files: ./files
         validate_certs_during_api_reachable_check: false
+        vault_gkms: true
+        vault_gkms_project: 'sb-vault'
+        vault_gkms_credentials_src_file: '~/.config/gcloud/sb-vault-kms.json'
+        vault_gkms_key_ring: 'ansible-vault'
+        vault_gkms_region: 'europe-west1'
 
-Once the infrastructrure is provisioned with Terraform, lastly to configure your cluster, just run:
+Lastly to configure your Consul/Vault cluster, now run:
 
     ansible-playbook -i hosts site.yml
