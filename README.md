@@ -1,12 +1,43 @@
-Vault/Consul Cluster:
+Vault/Consul Cluster Deployment Automation using Terraform Enterprise.
 
-- Infrastructure provisioned by Terraform in this repository
+- Infrastructure provisioned by Terraform Enterprise or OSS [this code]
 - Configured by Brian Shumate Ansible Roles
 
 For Consul, Vault Ansible roles check:
 
 - https://github.com/brianshumate/ansible-consul/
 - https://github.com/brianshumate/ansible-vault/
+
+# Google Cloud setup
+
+If you aren't familiar with Google Cloud you can read our [Getting Starting guide](GCP.md) to setup the required GCP project, service account and get the necessary credentials.
+
+# Terraform Enteprise Workspace
+
+Once your GCP environment is ready, reach [Terraform Enterprise UI](https://app.terraform.io) to create a Workspace linked to a fork of this repository in your organisation.
+
+## Terraform Variables
+
+You need to setup the following required Terraform variables in your workspace, as in this example
+
+      region: europe-west1
+      region_zone: europe-west1-c
+      project_name: sb-vault
+      ssh_pub_key: <YOUR_SSH_PUBLIC_KEY>
+
+## Terraform Environment Variable
+
+For security concerns it's better to setup the Google Credentials in an Environment variable. So create a sensitive environment variable like this
+
+      GOOGLE_CREDENTIALS: <JSON_KEY_ON_A_SINGLE_LINE>
+
+Make sure you join all the lines of your JSON or Terraform Enterprise will complain, he doesn't accept newlines in environment variables.
+
+# Terraform Plan
+
+You're now ready to run a plan, click on `Queue Plan`
+
+# Ansible workflow
 
 To create a cluster you first have to create an Inventory files with your nodes, for example:
 
