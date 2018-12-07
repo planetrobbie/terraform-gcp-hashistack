@@ -14,11 +14,9 @@ resource "google_service_account" "kms_access" {
   display_name = "sb-vault-kms Account"
 }
 
-resource "google_service_account_iam_binding" "kms-account-iam" {
-  service_account_id = "sb-vault-kms"
-  role        = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-
-  members = [
-    "serviceAccount:sb-vault-kms@sb-vault.iam.gserviceaccount.com",
-  ]
-}
+resource "google_project_iam_binding" "kms-account-binding" {
+    role    = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+     members = [
+         "serviceAccount:sb-vault-kms@sb-vault.iam.gserviceaccount.com"
+     ]
+ }
