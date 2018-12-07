@@ -26,7 +26,7 @@ resource "google_compute_firewall" "allow-inbound-consul-api" {
 
 resource "google_compute_firewall" "allow-consul-2-consul" {
   name    = "allow-consul-2-consul"
-  description = "allow consul traffic"
+  description = "allow internal consul traffic"
   network = "default"
 
   allow {
@@ -41,6 +41,20 @@ resource "google_compute_firewall" "allow-consul-2-consul" {
 
   source_tags = ["consul"]
   target_tags = ["consul"]
+}
+
+resource "google_compute_firewall" "allow-vault-2-vault" {
+  name    = "allow-vault-2-vault"
+  description = "allow internal vault traffic"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports = ["8201"]
+  }
+
+  source_tags = ["vault"]
+  target_tags = ["vault"]
 }
 
 resource "google_compute_firewall" "allow-inbound-consul-dns" {
