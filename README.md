@@ -240,6 +240,8 @@ So to provision this GSLB for your cluster, you can use the following repository
 
     https://github.com/planetrobbie/terraform-vault-lb/
 
+Version 1.0.10 of the Google Cloud module were [forked](https://github.com/planetrobbie/terraform-google-lb-http) to support https health check required for our Vault cluster.
+
 ### Required Variables
 
 You just need to setup the following required variable, like in this example:
@@ -248,7 +250,6 @@ You just need to setup the following required variable, like in this example:
     private_key_pem: <TLS_PRIV_KEY>
     cert_pem: <TLS_CERTIFICATE>
     vault_instances_names: ["prod-vault-0 ", "prod-vault-1"]. <- an HCL list !!
-    healthcheck_protocol: https
     gcp_dns_zone: vault-prod
     gcp_dns_domain: <YOUR_DOMAIN_NAME>
 
