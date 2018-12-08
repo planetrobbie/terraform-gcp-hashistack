@@ -15,7 +15,7 @@ resource "google_service_account" "kms_access" {
 }
 
 resource "google_kms_key_ring_iam_binding" "vault_iam_kms_binding" {
-   key_ring_id = "${google_kms_key_ring.vault_keyring.id}"
+   key_ring_id = "${var.project_name}/${var.gkms_location}/${var.gkms_vault_key_ring}"
    role = "roles/owner"
 
    members = [
