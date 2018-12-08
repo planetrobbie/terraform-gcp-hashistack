@@ -3,12 +3,9 @@
 - Infrastructure provisioned by Terraform Enterprise or Open Source [this code]
 - Vault Auto-unseal enabled thru [Google Cloud KMS](https://learn.hashicorp.com/vault/operations/autounseal-gcp-kms)
 - TLS Certificates generated using [Let's Encrypt](https://letsencrypt.org/)
-- Configured by Brian Shumate Ansible Roles [see below]
-
-For Consul, Vault Ansible roles check:
-
-- https://github.com/brianshumate/ansible-consul/
-- https://github.com/brianshumate/ansible-vault/
+- Cluster Configured using Brian Shumate Ansible Roles [available below]
+  - https://github.com/brianshumate/ansible-consul/
+  - https://github.com/brianshumate/ansible-vault/
 
 ## Google Cloud setup
 
