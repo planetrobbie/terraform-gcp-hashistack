@@ -254,3 +254,9 @@ You just need to setup the following required variable, like in this example:
     gcp_dns_domain: <YOUR_DOMAIN_NAME>
 
 If you've created a wildcard TLS certificate for your domain, you can reuse it for your Load Balancer too.
+
+Once you've provisioned your Load Balancer, after a while, few minutes, you should be able to access your cluster on the following URL
+
+    https://vault.<YOUR_DOMAIN_NAME>
+
+Thanks for reading this doc to the end ;) Good luck !
