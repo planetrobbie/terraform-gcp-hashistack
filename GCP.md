@@ -1,8 +1,8 @@
-Google Cloud (GCP) Getting Started Guide
+# Google Cloud (GCP) Getting Started Guide
 
 In this guide we assume you start from scratch, to have a billing account enabled for Google Cloud.
 
-# Google Cloud SDK
+## Google Cloud SDK
 
 The fastest way to be efficient with GCP is to use their [SDK](https://cloud.google.com/sdk/install), start by installing it.
 
@@ -16,11 +16,11 @@ If you already have it on your system, make sure it is up to date
 
     gcloud components update
 
-# Create a Project to Host your Cluster
+## Create a Project to Host your Cluster
 
     gcloud projects create sb-vault --organization=ORGANIZATION_ID --set-as-default
 
-# SDK Configuration
+## SDK Configuration
 
 Initialize your SDK and when doing so, when asked, choose the project you created earlier.
 
@@ -28,7 +28,7 @@ Initialize your SDK and when doing so, when asked, choose the project you create
 
 From now on all `gcloud` commands will target this project.
 
-# Enable APIs
+## Enable APIs
 
 Your project is brand new, so you need to enable the required APIs. You can list all of them with
 
@@ -42,7 +42,7 @@ Enable the following ones
     gcloud services enable dns.googleapis.com
     gcloud services enable cloudresourcemanager.googleapis.com [for account binding]
 
-# Create a Service Account
+## Create a Service Account
 
 A Service Account is like a robot account used to automate provisioning on GCP. Terraform will use a Service Account Key to authenticate to GCP.
 

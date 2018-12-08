@@ -1,7 +1,7 @@
 # Vault/Consul Cluster Deployment Automation with Terraform and Ansible.
 
-- Infrastructure provisioned by Terraform Enterprise or OSS [this code]
-- Auto-unseal enabled thru [Google Cloud KMS](https://learn.hashicorp.com/vault/operations/autounseal-gcp-kms)
+- Infrastructure provisioned by Terraform Enterprise or Open Source [this code]
+- Vault Auto-unseal enabled thru [Google Cloud KMS](https://learn.hashicorp.com/vault/operations/autounseal-gcp-kms)
 - TLS Certificates generated using [Let's Encrypt](https://letsencrypt.org/)
 - Configured by Brian Shumate Ansible Roles [see below]
 
