@@ -20,6 +20,8 @@ If you already have it on your system, update it.
 
     gcloud projects create <PROJECT_NAME> --organization=<ORGANIZATION_ID> --set-as-default
 
+Associate a Billing Account to this project.
+
 ## SDK Configuration
 
 Initialize your SDK and when doing so, when asked, choose the project you created earlier.
@@ -63,8 +65,6 @@ Now grant service account project ownership
     gcloud projects add-iam-policy-binding <PROJECT_NAME> --member \
     'serviceAccount:<PROJECT_NAME>-tf@<PROJECT_NAME>.iam.gserviceaccount.com' \
      --role 'roles/owner'
-
-Note: Make sure your account is linked to a billing account.
 
 This ends the setup of your Google Cloud environment ! Congrats.
 
