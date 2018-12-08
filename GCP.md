@@ -40,6 +40,7 @@ Enable the following ones
     gcloud services enable iam.googleapis.com
     gcloud services enable cloudkms.googleapis.com
     gcloud services enable dns.googleapis.com
+    gcloud services enable cloudresourcemanager.googleapis.com [for account binding]
 
 # Create a Service Account
 
