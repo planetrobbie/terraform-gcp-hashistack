@@ -139,11 +139,9 @@ Great !!! Almost there, stay with us ;)
 
 ### Google KMS Service Account
 
-It's not a good practice to share our project owner key too widely, we need to give our Vault nodes a service account key that give them the right to interact with Google Cloud KMS nothing more, nothing less. Let's create such an account
+It's not a good practice to share our project owner key too widely, we need to give our Vault nodes a service account key that give them the right to interact with Google Cloud KMS nothing more, nothing less. Such an account has been created by Terraform earlier, we just need to download a key to inject in Vault configuration to enable Google KMS Auto-unseal.
 
-    gcloud iam service-accounts create sb-vault-kms --display-name "sb-vault-kms Account"
-
-And create and download a corresponding JSON credentials
+Download a key like this:
 
     gcloud iam service-accounts keys create \
         ~/.config/gcloud/sb-vault-kms.json \
@@ -151,11 +149,7 @@ And create and download a corresponding JSON credentials
 
 Protect this file as well as you can, it gives access to Google KMS !
 
-Now grant service account access to Google Cloud KMS
-
-    gcloud projects add-iam-policy-binding sb-vault --member \
-    'serviceAccount:sb-vault-kms@sb-vault.iam.gserviceaccount.com' \
-     --role 'roles/cloudkms.cryptoKeyEncrypterDecrypter'
+We could have generated the key with Ansible but that expose it a bit more :/
 
 ### Ansible `site.yml`
 
