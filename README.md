@@ -21,10 +21,10 @@ You need to setup the following required Terraform variables in your workspace, 
 
       region: europe-west1
       region_zone: europe-west1-c
-      project_name: sb-vault
+      project_name: <PROJECT_NAME>
       ssh_pub_key: <YOUR_SSH_PUBLIC_KEY>
       gcp_dns_zone: vault-prod
-      gcp_dns_domain: prod.yet.org.
+      gcp_dns_domain: prod.<DOMAIN_NAME>.
 
 The SSH public key will be pushed to all instances to allow Ansible to connect to them.
 
@@ -101,15 +101,15 @@ Create an Inventory files with your nodes, based on the Terraform deployment, it
     vi hosts
 
     [consul_instances]
-    c3.prod.yet.org consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
-    c2.prod.yet.org consul_node_name=c2 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
-    c1.prod.yet.org consul_node_name=c3 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
-    v1.prod.yet.org consul_node_name=cc1
-    v2.prod.yet.org consul_node_name=cc2
+    c3.prod.<DOMAIN_NAME> consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
+    c2.prod.<DOMAIN_NAME> consul_node_name=c2 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
+    c1.prod.<DOMAIN_NAME> consul_node_name=c3 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
+    v1.prod.<DOMAIN_NAME> consul_node_name=cc1
+    v2.prod.<DOMAIN_NAME> consul_node_name=cc2
 
     [vault_instances]
-    v1.prod.yet.org
-    v2.prod.yet.org
+    v1.prod.<DOMAIN_NAME>
+    v2.prod.<DOMAIN_NAME>
 
 If you don't have any domain name that you can use to resolve your nodes, you'll have to replace all the FQDN above by their corresponding IP addresses that Terraform shared in its output, less fun.
 
@@ -124,20 +124,20 @@ Update Google Cloud DNS to setup the requested challenge.
 
     gcloud dns record-sets transaction start -z=vault-prod
     gcloud dns record-sets transaction add -z=vault-prod \
-      --name="_aacme-challenge.prod.yet.org." \
+      --name="_aacme-challenge.prod.<DOMAIN_NAME>." \
       --type=TXT \
       --ttl=300 "NhdbSiix2LdTJQri72UKp-_VDp28lm1LPzE92jjVRIc"
     gcloud dns record-sets transaction execute -z=vault-prod
 
 In parallel check record availability:
 
-    watch dig -t txt _acme-challenge.prod.yet.org
+    watch dig -t txt _acme-challenge.prod.<DOMAIN_NAME>
 
 The value should correspond to the challenge. Continue the process only when that's the case, it could alternate which is normal due to propagation time, wait until it's stop alternating. It can take few minutes. Once you get your TLS certificates generated copy them in their expected location
 
-    cp live/prod.yet.org/chain.pem ./ca.crt
-    cp live/prod.yet.org/privkey.pem ./vault.key
-    cp live/prod.yet.org/cert.pem ./vault.crt
+    cp live/prod.<DOMAIN_NAME>/chain.pem ./ca.crt
+    cp live/prod.<DOMAIN_NAME>/privkey.pem ./vault.key
+    cp live/prod.<DOMAIN_NAME>/cert.pem ./vault.crt
 
 Great !!! Almost there, stay with us ;)
 
@@ -148,8 +148,8 @@ It's not a good practice to share our project owner key too widely, we need to g
 Download a key like this:
 
     gcloud iam service-accounts keys create \
-        ~/.config/gcloud/sb-vault-kms.json \
-        --iam-account sb-vault-kms@sb-vault.iam.gserviceaccount.com
+        ~/.config/gcloud/<PROJECT_NAME>-kms.json \
+        --iam-account <PROJECT_NAME>-kms@<PROJECT_NAME>.iam.gserviceaccount.com
 
 Protect this file as well as you can, it gives access to Google KMS !
 
@@ -158,7 +158,6 @@ We could have generated the key with Ansible but that expose it a bit more :/
 ### Ansible `site.yml`
 
 The last step consist in telling Ansible what to do in `site.yml` like this
-
     
     cd hashistack
     vi site.yml
@@ -177,7 +176,7 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         consul_pkg: <ALTERNAME_PACKAGE_NAME>
         consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
         consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
-        
+
     - name: Install Vault
       hosts: vault_instances
       any_errors_fatal: true
@@ -197,8 +196,8 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         vault_tls_src_files: ./files
         validate_certs_during_api_reachable_check: false
         vault_gkms: true
-        vault_gkms_project: 'sb-vault'
-        vault_gkms_credentials_src_file: '~/.config/gcloud/sb-vault-kms.json'
+        vault_gkms_project: '<PROJECT_NAME>'
+        vault_gkms_credentials_src_file: '~/.config/gcloud/<PROJECT_NAME>-kms.json'
         vault_gkms_key_ring: 'ansible-vault'
         vault_gkms_region: 'europe-west1'
 
@@ -216,4 +215,4 @@ You can troubleshoot your deployment by running commands on all nodes like this
 
 You can get detailed facts about a node
 
-    ansible v1.prod.yet.org -i hosts -m setup -u sebastien
+    ansible v1.prod.<DOMAIN_NAME> -i hosts -m setup -u sebastien

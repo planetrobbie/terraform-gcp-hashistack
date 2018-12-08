@@ -10,8 +10,8 @@ resource "google_kms_crypto_key" "vault_key" {
 }
 
 resource "google_service_account" "kms_access" {
-  account_id   = "sb-vault-kms"
-  display_name = "sb-vault-kms Account"
+  account_id   = "${var.project_name}-kms"
+  display_name = "${var.project_name} Account"
 }
 
 resource "google_kms_key_ring_iam_binding" "vault_iam_kms_binding" {

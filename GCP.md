@@ -18,7 +18,7 @@ If you already have it on your system, update it.
 
 ## Create a Project to Host your Cluster
 
-    gcloud projects create sb-vault --organization=ORGANIZATION_ID --set-as-default
+    gcloud projects create <PROJECT_NAME> --organization=<ORGANIZATION_ID> --set-as-default
 
 ## SDK Configuration
 
@@ -48,20 +48,20 @@ A Service Account is like a robot account used to automate provisioning on GCP. 
 
 Create one like this
 
-    gcloud iam service-accounts create sb-vault-tf --display-name "sb-vault-tf Account"
+    gcloud iam service-accounts create <PROJECT_NAME>-tf --display-name "<PROJECT_NAME>-tf Account"
 
 And create and download a corresponding JSON credentials
 
     gcloud iam service-accounts keys create \
-        ~/.config/gcloud/sb-vault-tf.json \
-        --iam-account sb-vault-tf@sb-vault.iam.gserviceaccount.com
+        ~/.config/gcloud/<PROJECT_NAME>-tf.json \
+        --iam-account <PROJECT_NAME>-tf@<PROJECT_NAME>.iam.gserviceaccount.com
 
 Protect this file as well as you can, it gives access to your project.
 
 Now grant service account project ownership
 
-    gcloud projects add-iam-policy-binding sb-vault --member \
-    'serviceAccount:sb-vault-tf@sb-vault.iam.gserviceaccount.com' \
+    gcloud projects add-iam-policy-binding <PROJECT_NAME> --member \
+    'serviceAccount:<PROJECT_NAME>-tf@<PROJECT_NAME>.iam.gserviceaccount.com' \
      --role 'roles/owner'
 
 Note: Make sure your account is linked to a billing account.
