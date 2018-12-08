@@ -14,9 +14,11 @@ resource "google_service_account" "kms_access" {
   display_name = "sb-vault-kms Account"
 }
 
-resource "google_project_iam_binding" "kms-account-binding" {
-    role    = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-     members = [
-         "serviceAccount:sb-vault-kms@sb-vault.iam.gserviceaccount.com"
-     ]
- }
+resource "google_kms_key_ring_iam_binding" "vault_iam_kms_binding" {
+   key_ring_id = "${google_kms_key_ring.vault_keyring.id}"
+   role = "roles/owner"
+
+   members = [
+     "serviceAccount:${google_service_account.kms_access.email}",
+   ]
+}
