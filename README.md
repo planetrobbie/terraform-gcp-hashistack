@@ -17,7 +17,7 @@ Once your GCP environment is ready, reach [Terraform Enterprise UI](https://app.
 
 ### Terraform Variables
 
-You need to setup the following required Terraform variables in your workspace, as in this example
+You need to setup the following required Terraform variables in your workspace, for example:
 
       region: europe-west1
       region_zone: europe-west1-c
@@ -26,7 +26,9 @@ You need to setup the following required Terraform variables in your workspace, 
       gcp_dns_zone: vault-prod
       gcp_dns_domain: prod.yet.org.
 
-Make sure you update the variable above according to your needs. You can also look inside `variable.tf` to see what other ones you can update.
+The SSH public key will be pushed to all instances to allow Ansible to connect to them.
+
+Make sure you update the variable above according to your needs. You can also look inside `variable.tf` to see some other that you can update too.
 
 ### Terraform OSS
 
@@ -95,6 +97,9 @@ Install Vault and Consul Ansible Roles:
 
 Create an Inventory files with your nodes, based on the Terraform deployment, it should look like this:
 
+    mkdir hashistack; cd hashistack
+    vi hosts
+
     [consul_instances]
     c3.prod.yet.org consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
     c2.prod.yet.org consul_node_name=c2 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
@@ -105,6 +110,8 @@ Create an Inventory files with your nodes, based on the Terraform deployment, it
     [vault_instances]
     v1.prod.yet.org
     v2.prod.yet.org
+
+If you don't have any domain name that you can use to resolve your nodes, you'll have to replace all the FQDN above by their corresponding IP addresses that Terraform shared in its output, less fun.
 
 ### TLS Certificates
 
@@ -152,6 +159,10 @@ We could have generated the key with Ansible but that expose it a bit more :/
 
 The last step consist in telling Ansible what to do in `site.yml` like this
 
+    
+    cd hashistack
+    vi site.yml
+
     - name: Configure Consul cluster
       hosts: consul_instances
       any_errors_fatal: true
@@ -166,7 +177,7 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         consul_pkg: <ALTERNAME_PACKAGE_NAME>
         consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
         consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
-
+        
     - name: Install Vault
       hosts: vault_instances
       any_errors_fatal: true
@@ -202,3 +213,7 @@ Obviously when everything looks good, it's a good practice to stop sshd on your 
 You can troubleshoot your deployment by running commands on all nodes like this
 
     ansible vault_instances -i hosts -a "systemctl status vault" -u sebastien --become
+
+You can get detailed facts about a node
+
+    ansible v1.prod.yet.org -i hosts -m setup -u sebastien
