@@ -1,6 +1,6 @@
 # Google Cloud (GCP) Getting Started Guide
 
-In this guide we assume you start from scratch, to have a billing account enabled for Google Cloud.
+In this guide we assume you start from scratch, you just need a Google account and a billing account enabled for Google Cloud.
 
 ## Google Cloud SDK
 
@@ -12,7 +12,7 @@ Restart your shell with
 
     exec -l $SHELL
 
-If you already have it on your system, make sure it is up to date
+If you already have it on your system, update it.
 
     gcloud components update
 
@@ -67,3 +67,5 @@ Now grant service account project ownership
 Note: Make sure your account is linked to a billing account.
 
 This ends the setup of your Google Cloud environment ! Congrats.
+
+You can get back to the [main documentation](README.md).
