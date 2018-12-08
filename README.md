@@ -191,6 +191,14 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         vault_gkms_key_ring: 'ansible-vault'
         vault_gkms_region: 'europe-west1'
 
+All the ALTERNAME variables are optional and useful if you want to deploy Enterprise binaries, you just have to specify the download URL, package name and checksum file.
+
 Lastly to configure your Consul/Vault cluster, now run:
 
     ansible-playbook -i hosts site.yml
+
+Obviously when everything looks good, it's a good practice to stop sshd on your cluster.
+
+You can troubleshoot your deployment by running commands on all nodes like this
+
+    ansible vault_instances -i hosts -a "systemctl status vault" -u sebastien --become
