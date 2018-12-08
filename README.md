@@ -226,10 +226,11 @@ We kept the resource to Load Balance the Vault Cluster outsite of this repo for 
 - Lets keep this one as simple and readable as possible, no modules !
 - Not all the people would like to load balance the Vault Cluster using Google GSLB (layer-7) load balancing, because it opens up the secrets to them !
 
-Unfortunately so far their Network Load Balancer (layer-4) can't leverage a HTTPS healthcheck which is necessary for our cluster. A workaround consist of instantiating a NGINX service on each Vault node which will relay the healthcheck but that adds a level of complexity and potential failure.
+Unfortunately so far their Network Load Balancer (layer-4) can't leverage a HTTPS health check which is necessary for our cluster. A workaround consist of instantiating a NGINX service on each Vault node which will relay the healthcheck from HTTP to HTTPS but that adds a level of complexity and potential failure.
 
-So for our demo environment I've decided to stick with Google Cloud Global Load Balancer which also offer many advantages
+So for our demo environment I've decided to stick with [Google Cloud Global Load Balancer]() which also offer many advantages
 
+- It is a software defined LB, no chokepoint !
 - Can load balance easily to the DR Cluster in case of emergency
 - Can load balance based on locality to address Performance replication nodes.
 
@@ -247,6 +248,7 @@ You just need to setup the following required variable, like in this example:
     private_key_pem: <TLS_PRIV_KEY>
     cert_pem: <TLS_CERTIFICATE>
     vault_instances_names: ["prod-vault-0 ", "prod-vault-1"]. <- an HCL list !!
+    healthcheck_protocol: https
     gcp_dns_zone: vault-prod
     gcp_dns_domain: <YOUR_DOMAIN_NAME>
 
