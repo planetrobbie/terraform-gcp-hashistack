@@ -69,7 +69,7 @@ variable "gkms_vault_key_ring" {
 
 variable "gkms_vault_key" {
   description = "name of the Vault Masterkey"
-  default = "vault-key"
+  default = "vault_key"
 }
 
 #### Google Firewalling
