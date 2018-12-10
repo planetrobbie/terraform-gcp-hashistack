@@ -163,19 +163,20 @@ The last step consist in telling Ansible what to do in `site.yml` like this
     vi site.yml
 
     - name: Configure Consul cluster
-      hosts: consul_instances
-      any_errors_fatal: true
-      become: true
-      become_user: root
-      roles:
-        - {role: ansible.consul}
-      vars:
-        ansible_ssh_user: <USERNAME>
-        consul_iface: ens4
-        consul_install_remotely: true
-        consul_pkg: <ALTERNAME_PACKAGE_NAME>
-        consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
-        consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
+    hosts: consul_instances
+    any_errors_fatal: true
+    become: true
+    become_user: root
+    roles:
+      - {role: ansible.consul}
+    vars:
+      ansible_ssh_user: <INSTANCE_USERNAME>
+      consul_iface: ens4
+      consul_install_remotely: true
+      consul_version: 1.4.0
+      consul_pkg: <ALTERNAME_PACKAGE_NAME>
+      consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
+      consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
 
     - name: Install Vault
       hosts: vault_instances
@@ -185,29 +186,61 @@ The last step consist in telling Ansible what to do in `site.yml` like this
       roles:
         - {role: ansible.vault}
       vars:
-        ansible_ssh_user: sebastien
+        ansible_ssh_user: <INSTANCE_USERNAME>
         vault_iface: ens4
-        vault_install_remotely: true
-        vault_pkg: <ALTERNAME_PACKAGE_NAME>
-        vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
-        vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
-        vault_ui: true
-        vault_tls_disable: false
-        vault_tls_src_files: ./files
-        validate_certs_during_api_reachable_check: false
-        vault_gkms: true
-        vault_gkms_project: '<PROJECT_NAME>'
-        vault_gkms_credentials_src_file: '~/.config/gcloud/<PROJECT_NAME>-kms.json'
-        vault_gkms_key_ring: 'ansible-vault'
-        vault_gkms_region: 'europe-west1'
+      vault_install_remotely: true
+      vault_version: 1.0.0
+      vault_pkg: <ALTERNAME_PACKAGE_NAME>
+      vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
+      vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
+      vault_ui: true
+      vault_tls_disable: false
+      vault_tls_src_files: ./files
+      validate_certs_during_api_reachable_check: false
+      vault_gkms: true
+      vault_gkms_project: '<PROJECT_NAME>'
+      vault_gkms_credentials_src_file: '~/.config/gcloud/<PROJECT_NAME>-kms.json'
+      vault_gkms_key_ring: 'ansible-vault'
+      vault_gkms_region: 'europe-west1'
 
 All the ALTERNAME variables are optional and useful if you want to deploy Enterprise binaries, you just have to specify the download URL, package name and checksum file.
 
-Lastly to configure your Consul/Vault cluster, now run:
+### Ansible execution
+
+Lastly to configure your Consul/Vault cluster, now execute the playbook with:
 
     ansible-playbook -i hosts site.yml
 
-Obviously when everything looks good, it's a good practice to stop sshd on your cluster.
+Obviously when everything looks good, it's a good practice to stop `sshd` on your cluster.
+
+### Vault Initialize
+
+Consul and Vault are now installed, the last manual step required is vault initialization:
+
+    export https://v1.<YOUR_DOMAIN_NAME>:8200
+    vault operator init    
+
+### Check Vault Status
+
+Now check Vault status it should be unsealed
+
+    vault status
+    Key                      Value
+    ---                      -----
+    Recovery Seal Type       shamir
+    Initialized              true
+    Sealed                   false
+    Total Recovery Shares    5
+    Threshold                3
+    Version                  1.0.0
+    Cluster Name             dc1
+    Cluster ID               xx-xx-xx-xx-xx
+    HA Enabled               true
+    HA Cluster               https://xx.xx.xx.xx:8201
+    HA Mode                  active
+    Last WAL                 16
+
+You now have a fully operational Consul/Vault Cluster congrat !!! If that's not the case read the next section.
 
 ### Troubleshooting
 
@@ -218,6 +251,25 @@ You can troubleshoot your deployment by running commands on all nodes like this
 You can get detailed facts about a node
 
     ansible v1.prod.<DOMAIN_NAME> -i hosts -m setup -u sebastien
+
+### Cluster Updgrades
+
+Ansible can life cycle your cluster to upgrade Consul binaries. Add the following lines to your `site.yml` 
+
+    consul_version: <CONSUL_VERSION>
+    consul_install_upgrade: true
+
+and run
+
+    ansible-playbook -i hosts site.yml
+
+To upgrade Vault binaries just bump up the `vault_version` in your `site.yml` file and run, this avoid re-running all the Consul related task:
+
+    ansible-playbook -i hosts site.yml --start-at-task="Add Vault user"
+
+Now restart the Vault cluster, it is manual due to the requirement for Unsealing if based on Shamir.
+
+    ansible vault_instances -i hosts -a "systemctl restart vault" -u sebastien --become
 
 ## Google Cloud Load Balancing for Vault Cluster
 
