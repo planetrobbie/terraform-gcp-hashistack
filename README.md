@@ -174,6 +174,7 @@ The last step consist in telling Ansible what to do in `site.yml` like this
       consul_iface: ens4
       consul_install_remotely: true
       consul_version: 1.4.0
+      consul_dnsmasq_enable: true
       consul_pkg: <ALTERNAME_PACKAGE_NAME>
       consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
       consul_zip_url: <ALTERNATE_DOWNLOAD_URL>
@@ -204,6 +205,16 @@ The last step consist in telling Ansible what to do in `site.yml` like this
       vault_gkms_region: 'europe-west1'
 
 All the ALTERNAME variables are optional and useful if you want to deploy Enterprise binaries, you just have to specify the download URL, package name and checksum file.
+
+### dnsmasq
+
+To enable dnsmasq on the consul cluster, we've added up above in our `site.yml` file the variable
+
+      consul_dnsmasq_enable: true
+
+You can now check it works well by requesting active vault leader IP address like this:
+      
+      dig active.vault.service.consul @<CONSUL_IP>
 
 ### Ansible execution
 
