@@ -101,9 +101,9 @@ Create an Inventory files with your nodes, based on the Terraform deployment, it
     vi hosts
 
     [consul_instances]
-    c3.prod.<DOMAIN_NAME> consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
+    c3.prod.<DOMAIN_NAME> consul_node_name=c3 consul_client_address="{{ consul_bind_address }}" consul_node_role=bootstrap  
     c2.prod.<DOMAIN_NAME> consul_node_name=c2 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
-    c1.prod.<DOMAIN_NAME> consul_node_name=c3 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
+    c1.prod.<DOMAIN_NAME> consul_node_name=c1 consul_client_address="{{ consul_bind_address }}" consul_node_role=server
     v1.prod.<DOMAIN_NAME> consul_node_name=cc1
     v2.prod.<DOMAIN_NAME> consul_node_name=cc2
 
@@ -126,7 +126,7 @@ Update Google Cloud DNS to setup the requested challenge.
     gcloud dns record-sets transaction add -z=vault-prod \
       --name="_aacme-challenge.prod.<DOMAIN_NAME>." \
       --type=TXT \
-      --ttl=300 "NhdbSiix2LdTJQri72UKp-_VDp28lm1LPzE92jjVRIc"
+      --ttl=300 "<CERT_BOT_CHALLENGE_TXT_VALUE>"
     gcloud dns record-sets transaction execute -z=vault-prod
 
 In parallel check record availability:
@@ -153,7 +153,7 @@ Download a key like this:
 
 Protect this file as well as you can, it gives access to Google KMS !
 
-We could have generated the key with Ansible but that expose it a bit more :/
+We could have generated the key with Terraform and put it in the output, but that would have exposed it a bit too much :/
 
 ### Ansible `site.yml`
 
