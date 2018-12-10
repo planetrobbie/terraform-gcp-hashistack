@@ -189,20 +189,20 @@ The last step consist in telling Ansible what to do in `site.yml` like this
       vars:
         ansible_ssh_user: <INSTANCE_USERNAME>
         vault_iface: ens4
-      vault_install_remotely: true
-      vault_version: 1.0.0
-      vault_pkg: <ALTERNAME_PACKAGE_NAME>
-      vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
-      vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
-      vault_ui: true
-      vault_tls_disable: false
-      vault_tls_src_files: ./files
-      validate_certs_during_api_reachable_check: false
-      vault_gkms: true
-      vault_gkms_project: '<PROJECT_NAME>'
-      vault_gkms_credentials_src_file: '~/.config/gcloud/<PROJECT_NAME>-kms.json'
-      vault_gkms_key_ring: 'ansible-vault'
-      vault_gkms_region: 'europe-west1'
+        vault_install_remotely: true
+        vault_version: 1.0.0
+        vault_pkg: <ALTERNAME_PACKAGE_NAME>
+        vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
+        vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
+        vault_ui: true
+        vault_tls_disable: false
+        vault_tls_src_files: ./files
+        validate_certs_during_api_reachable_check: false
+        vault_gkms: true
+        vault_gkms_project: '<PROJECT_NAME>'
+        vault_gkms_credentials_src_file: '~/.config/gcloud/<PROJECT_NAME>-kms.json'
+        vault_gkms_key_ring: 'ansible-vault'
+        vault_gkms_region: 'europe-west1'
 
 All the ALTERNAME variables are optional and useful if you want to deploy Enterprise binaries, you just have to specify the download URL, package name and checksum file.
 
