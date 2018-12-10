@@ -20,6 +20,11 @@ resource "google_compute_firewall" "allow-inbound-consul-api" {
     ports = ["8500", "53"]
   }
 
+  allow {
+    protocol = "udp"
+    ports = ["53"]
+  }
+
   target_tags = ["consul"]
   source_ranges = "${var.external_source_ranges}"
 }
