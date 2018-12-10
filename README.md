@@ -163,12 +163,12 @@ The last step consist in telling Ansible what to do in `site.yml` like this
     vi site.yml
 
     - name: Configure Consul cluster
-    hosts: consul_instances
-    any_errors_fatal: true
-    become: true
-    become_user: root
-    roles:
-      - {role: ansible.consul}
+      hosts: consul_instances
+      any_errors_fatal: true
+      become: true
+      become_user: root
+      roles:
+        - {role: ansible.consul}
     vars:
       ansible_ssh_user: <INSTANCE_USERNAME>
       consul_iface: ens4
