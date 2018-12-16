@@ -11,6 +11,16 @@ data "template_file" "userdata" {
     }
 }
 
+resource "google_compute_address" "consul-ip-addresses" {
+  name = "consul-ip-${count.index}"
+  count = 3
+}
+
+resource "google_compute_address" "vault-ip-addresses" {
+  name = "vault-ip-${count.index}"
+  count = 2
+}
+
 resource "google_compute_instance" "consul" {
   name         = "prod-consul-${count.index}"
   machine_type = "${var.instance_type}"
@@ -29,7 +39,8 @@ resource "google_compute_instance" "consul" {
     network = "default"
 
     access_config {
-      // Ephemeral IP
+      // static IP
+      nat_ip = "${element(google_compute_address.consul-ip-addresses.*.address, count.index)}"
     }
   }
 
@@ -59,7 +70,8 @@ resource "google_compute_instance" "vault" {
     network = "default"
 
     access_config {
-      // Ephemeral IP
+      // static IP
+      nat_ip = "${element(google_compute_address.vault-ip-addresses.*.address, count.index)}"
     }
   }
 
