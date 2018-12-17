@@ -11,7 +11,7 @@ resource "google_compute_firewall" "allow-inbound-vault-api" {
 }
 
 resource "google_compute_firewall" "allow-inbound-nginx" {
-  name    = "allow-inbound-vault-nginx"
+  name    = "allow-inbound-nginx"
   network = "default"
 
   allow {
