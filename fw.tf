@@ -10,6 +10,18 @@ resource "google_compute_firewall" "allow-inbound-vault-api" {
   target_tags = ["vault"]
 }
 
+resource "google_compute_firewall" "allow-inbound-nginx" {
+  name    = "allow-inbound-vault-nginx"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports = ["443"]
+  }
+ 
+  target_tags = ["vault"]
+}
+
 resource "google_compute_firewall" "allow-inbound-consul-api" {
   name    = "allow-inbound-consul-api-dns"
   description = "allow API and DNS traffic to Consul nodes"
