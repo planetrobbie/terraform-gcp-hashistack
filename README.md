@@ -228,7 +228,7 @@ Obviously when everything looks good, it's a good practice to stop `sshd` on you
 
 Consul and Vault are now installed, the last manual step required is vault initialization:
 
-    export https://v1.<YOUR_DOMAIN_NAME>:8200
+    export VAULT_ADDR=https://v1.<YOUR_DOMAIN_NAME>:8200
     vault operator init    
 
 ### Check Vault Status
@@ -252,6 +252,8 @@ Now check Vault status it should be unsealed
     Last WAL                 16
 
 You now have a fully operational Consul/Vault Cluster congrat !!! If that's not the case read the next section.
+  
+    ansible v2.prod.yet.org -i hosts -a "systemctl restart vault" -u <USERNAME> --become
 
 ### Troubleshooting
 
