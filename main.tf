@@ -80,5 +80,10 @@ resource "google_compute_instance" "vault" {
     user-data = "${data.template_file.userdata.rendered}"
   }
 
+  # Label used by Vault GCP Auth GCE role to allow Instance Authentication.
+  label {
+    auth = true
+  }
+
   count = 2
 }
