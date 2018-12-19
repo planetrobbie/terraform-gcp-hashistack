@@ -81,7 +81,7 @@ resource "google_compute_instance" "vault" {
   }
 
   # Label used by Vault GCP Auth GCE role to allow Instance Authentication.
-  label {
+  labels {
     auth = true
   }
 
