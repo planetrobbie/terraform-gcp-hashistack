@@ -85,5 +85,12 @@ resource "google_compute_instance" "vault" {
     auth = "yes"
   }
 
+  # Assign default service account to Instance to allow VAULT GCE authentication
+  service_account {
+    # This scope gives full access to all GCP API, for an exhaustive list of scopes consult
+    # https://cloud.google.com/sdk/gcloud/reference/alpha/compute/instances/set-scopes#--scopes
+    scopes = "cloud-platform"
+  }
+
   count = 2
 }
