@@ -89,7 +89,7 @@ resource "google_compute_instance" "vault" {
   service_account {
     # This scope gives full access to all GCP API, for an exhaustive list of scopes consult
     # https://cloud.google.com/sdk/gcloud/reference/alpha/compute/instances/set-scopes#--scopes
-    scopes = "cloud-platform"
+    scopes = ["cloud-platform"]
   }
 
   count = 2
