@@ -47,6 +47,8 @@ Enable the following ones
     gcloud services enable sqladmin.googleapis.com [for SQL managed services]
     gcloud services enable cloudresourcemanager.googleapis.com [for Vault GCP Secret Engine]
     gcloud services enable cloudapis.googleapis.com
+    gcloud services enable cloudbuild.googleapis.com
+    gcloud services enable sourcerepo.googleapis.com
 
 ## Create a Service Account
 
