@@ -173,7 +173,7 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         ansible_ssh_user: <INSTANCE_USERNAME>
         consul_iface: ens4
         consul_install_remotely: true
-        consul_version: 1.4.0
+        consul_version: 1.4.4
         consul_dnsmasq_enable: true
         consul_pkg: <ALTERNAME_PACKAGE_NAME>
         consul_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
@@ -190,7 +190,7 @@ The last step consist in telling Ansible what to do in `site.yml` like this
         ansible_ssh_user: <INSTANCE_USERNAME>
         vault_iface: ens4
         vault_install_remotely: true
-        vault_version: 1.0.0
+        vault_version: 1.1.0
         vault_pkg: <ALTERNAME_PACKAGE_NAME>
         vault_checksum_file_url: <ALTERNATE_CHECKSUM_FILE>
         vault_zip_url: <ALTERNATE_DOWNLOAD_URL>
